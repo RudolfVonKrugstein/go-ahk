@@ -1,3 +1,5 @@
+// +build windows
+
 package go_ahk
 
 import (
@@ -11,7 +13,7 @@ type AutoHotKeyDLL struct {
 }
 
 func NewAutoHotKeyDLL() (*AutoHotKeyDLL, error) {
-	return AutoHotKeyDLL{
+	return &AutoHotKeyDLL{
 		dll: syscall.NewLazyDLL("./AutoHotkey.dll"),
 	}, nil
 }
