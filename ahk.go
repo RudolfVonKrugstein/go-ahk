@@ -5,11 +5,11 @@ package go_ahk
 import (
 	"syscall"
 	"time"
-	"unsafe"
 )
 
 type AutoHotKeyDLL struct {
 	dll *syscall.LazyDLL
+	currentScript *AHKScript
 }
 
 func NewAutoHotKeyDLL() (*AutoHotKeyDLL, error) {
@@ -18,32 +18,27 @@ func NewAutoHotKeyDLL() (*AutoHotKeyDLL, error) {
 	}, nil
 }
 
-func stringToAhkStringBytes(s string) []byte {
-	bytes := make([]byte, (len(s) + 1) * 2)
-	for i := 0; i < len(s); i++ {
-		bytes[i * 2] = s[i]
-		bytes[i * 2 + 1] = 0
-	}
-	bytes[len(s) * 2] = 0
-	bytes[len(s) * 2 + 1] = 0
-	return bytes
-}
-
 func isError(err error) bool {
 	return err != nil && err.Error() != "The operation completed successfully."
 }
 
-func (dll* AutoHotKeyDLL) RunScript(script string) error {
-	bytes := stringToAhkStringBytes(script)
-
-	_, _, err := dll.dll.NewProc("ahktextdll").Call(uintptr(unsafe.Pointer(&bytes[0])), uintptr(0), uintptr(0))
+func (dll* AutoHotKeyDLL) RunScript(script AHKScript) error {
+	// Are we already running?
+	if dll.currentScript != nil {
+		dll.WaitForScript()
+	}
+	_, _, err := dll.dll.NewProc("ahktextdll").Call(script.GetUIntPtr(), uintptr(0), uintptr(0))
 	if isError(err) {
 		return err
 	}
+	dll.currentScript = &script
 	return nil
 }
 
 func (dll* AutoHotKeyDLL) IsScriptRunning() (bool, error) {
+	if dll.currentScript == nil {
+		return false, nil
+	}
 	res, _, err := dll.dll.NewProc("ahkReady").Call()
 	if isError(err) {
 		return false, err

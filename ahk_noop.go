@@ -12,7 +12,7 @@ func NewAutoHotKeyDLL() (*AutoHotKeyDLL, error) {
 }
 
 
-func (dll* AutoHotKeyDLL) RunScript(script string) error {
+func (dll* AutoHotKeyDLL) RunScript(script AHKScript) error {
 	return nil
 }
 
