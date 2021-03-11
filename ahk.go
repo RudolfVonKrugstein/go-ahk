@@ -53,8 +53,9 @@ func (dll* AutoHotKeyDLL) IsScriptRunning() (bool, error) {
 
 func (dll* AutoHotKeyDLL) WaitForScript() error {
 	running := true
+	var err error
 	for ;running; {
-		running, err := dll.IsScriptRunning()
+		running, err = dll.IsScriptRunning()
 		if isError(err) {
 			return err
 		}
