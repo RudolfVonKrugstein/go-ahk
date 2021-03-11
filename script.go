@@ -10,7 +10,7 @@ type AHKScript struct {
 	script []byte
 }
 
-func NewAHKScript(s string) AHKScript {
+func NewAHKScript(s string) *AHKScript {
 	// Convert to wide char string
 	bytes := make([]byte, (len(s) + 1) * 2)
 	for i := 0; i < len(s); i++ {
@@ -20,7 +20,7 @@ func NewAHKScript(s string) AHKScript {
 	bytes[len(s) * 2] = 0
 	bytes[len(s) * 2 + 1] = 0
 
-	return AHKScript{
+	return &AHKScript{
 		bytes,
 	}
 }

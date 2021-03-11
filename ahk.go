@@ -22,7 +22,7 @@ func isError(err error) bool {
 	return err != nil && err.Error() != "The operation completed successfully."
 }
 
-func (dll* AutoHotKeyDLL) RunScript(script AHKScript) error {
+func (dll* AutoHotKeyDLL) RunScript(script *AHKScript) error {
 	// Are we already running?
 	if dll.currentScript != nil {
 		dll.WaitForScript()
@@ -31,7 +31,7 @@ func (dll* AutoHotKeyDLL) RunScript(script AHKScript) error {
 	if isError(err) {
 		return err
 	}
-	dll.currentScript = &script
+	dll.currentScript = script
 	return nil
 }
 
